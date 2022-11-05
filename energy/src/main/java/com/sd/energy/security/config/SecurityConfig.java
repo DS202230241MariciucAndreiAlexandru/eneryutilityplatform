@@ -18,7 +18,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
-import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -60,12 +59,13 @@ public class SecurityConfig {
                                                  .orElseThrow(() -> new UsernameNotFoundException(format("User: %s, not found", username))))
                    .passwordEncoder(passwordEncoder)
                    .and()
+                   .parentAuthenticationManager(null)
                    .build();
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable();
+        http.csrf().disable();
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER);
 
@@ -95,7 +95,7 @@ public class SecurityConfig {
         return NimbusJwtDecoder.withPublicKey(this.rsaPublicKey).build();
     }
 
-    // Extract authorities from the roles claim
+    // Extract role from the roles claim
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         var jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
@@ -107,9 +107,20 @@ public class SecurityConfig {
         return jwtAuthenticationConverter;
     }
 
-    @Bean
-    GrantedAuthorityDefaults grantedAuthorityDefaults() {
-        return new GrantedAuthorityDefaults(""); // Remove the ROLE_ prefix
-    }
+    //    @Bean
+    //    CorsConfigurationSource corsConfigurationSource() {
+    //        CorsConfiguration configuration = new CorsConfiguration();
+    //        configuration.setAllowedOrigins(List.of("*"));
+    //        configuration.setAllowedMethods(List.of("*"));
+    //        configuration.setExposedHeaders(List.of("*"));
+    //        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    //        source.registerCorsConfiguration("/**", configuration);
+    //        return source;
+    //    }
+
+    //    @Bean
+    //    GrantedAuthorityDefaults grantedAuthorityDefaults() {
+    //        return new GrantedAuthorityDefaults(""); // Remove the ROLE_ prefix
+    //    }
 
 }

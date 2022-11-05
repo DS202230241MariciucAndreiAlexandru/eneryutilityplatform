@@ -1,0 +1,40 @@
+version: '2.1'
+
+services:
+  postgres:
+    image: postgres
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "root" ]
+      timeout: 45s
+      interval: 10s
+      retries: 5
+    restart: always
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=energydb
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - "5433:5432"
+    container_name: energydbcontainer
+
+  demo-be:
+    image: energy
+    build: .
+    restart: always
+    ports:
+      - "8090:8090"
+    environment:
+      #- DB_IP=172.22.0.2
+      - DB_IP=energydbcontainer
+      #      - RABBIT_IP=demo-rabbit
+      - DB_PORT=5432
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_DBNAME=energydb
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+#docker compose up
+#docker compose downb

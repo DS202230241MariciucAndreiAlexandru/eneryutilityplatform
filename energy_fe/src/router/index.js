@@ -27,7 +27,7 @@ const routes = [
         path: '/user',
         name: 'user',
         component: null,
-        role: roles.USER
+        meta: {role: roles.USER}
     }
 ];
 

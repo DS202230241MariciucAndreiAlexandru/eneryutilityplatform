@@ -1,41 +1,62 @@
 <template>
-  <v-container class="c">
-    <v-sheet dark class="align-self-center">
-      <h1 class="align-center ma-16" >awdaws</h1>
+  <v-container class="center-login fill-height">
+    <v-sheet outlined rounded elevation="10" min-width="700">
+      <v-form v-model="valid" class="pa-16" v-on:keyup.enter="login">
+        <v-container class="flex-column">
+          <v-alert
+              v-if="errorMessageFlag"
+              dark>
+            {{ errorMessages }}
+          </v-alert>
+          <v-row class="px-1">
+            <v-text-field v-model="username" :rules="nameRules" label="username" required/>
+          </v-row>
+          <v-row>
+            <v-text-field type="password" v-model="password" :rules="passwordRules" label="passowrd" required/>
+          </v-row>
+          <v-row>
+            <v-btn x-large dark @click="login">
+              Login
+            </v-btn>
+          </v-row>
+        </v-container>
+      </v-form>
     </v-sheet>
   </v-container>
 </template>
 
 <script>
+
+import {authStore} from "@/store/authStore";
+
 export default {
   name: "LoginView",
+  setup() {
+  },
   data: () => ({
     valid: false,
     username: '',
-    token: '',
+    password: '',
     nameRules: [
       v => !!v || 'username este necesar'
     ],
-    tokenRules: [
-      v => !!v || 'Token este necesar'
+    passwordRules: [
+      v => !!v || 'password este necesar'
     ],
-    errorMessages: "Mai incearca! Nu am gasit user sau token! Foloseste numele oficial!",
+    errorMessages: "Mai încearcă! Nu am găsit user sau password",
     errorMessageFlag: false
   }),
   methods: {
     login() {
-      console.log(this.username, this.token);
-      this.errorMessageFlag = true;
+      authStore().login({username: this.username, password: this.password});
     }
   }
 }
 </script>
 
 <style scoped>
-@media {
-  .c {
-    display: grid;
-    place-content: center;
-  }
+.center-login {
+  display: grid;
+  place-content: center;
 }
 </style>

@@ -18,11 +18,12 @@ router.beforeEach((to, from, next) => {
     if (roles.ANONYMOUS === to.meta.role) {
         next();
     } else {
+        //aici o sa testez cu rolul userului curent
         next({path: "/login"});
     }
 });
 
-axios.defaults.baseURL = "http://localhost/8090"
+axios.defaults.baseURL = "http://localhost:8090";
 
 new Vue({
     vuetify,
