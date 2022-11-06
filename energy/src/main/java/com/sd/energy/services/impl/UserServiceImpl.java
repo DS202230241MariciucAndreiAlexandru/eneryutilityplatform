@@ -2,6 +2,7 @@ package com.sd.energy.services.impl;
 
 import com.sd.energy.domain.dto.DeviceDto;
 import com.sd.energy.domain.dto.UserDto;
+import com.sd.energy.domain.mapper.DeviceMapper;
 import com.sd.energy.domain.mapper.UserMapper;
 import com.sd.energy.domain.model.User;
 import com.sd.energy.repository.DeviceRepository;
@@ -9,6 +10,7 @@ import com.sd.energy.security.repository.UserRepository;
 import com.sd.energy.services.UserService;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final DeviceRepository deviceRepository;
     private final UserMapper userMapper;
+    private final DeviceMapper deviceMapper;
 
     @Override
     public List<UserDto> findAll() {
@@ -70,5 +73,16 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         return true;
+    }
+
+    @Override
+    public List<DeviceDto> findAllDevicesForUser(Long id) {
+        Optional<User> byId = userRepository.findById(id);
+        if (byId.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return byId.get().getDevices().stream()
+                   .map(deviceMapper::deviceToDto).collect(Collectors.toList());
     }
 }

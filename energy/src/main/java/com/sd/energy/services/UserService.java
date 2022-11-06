@@ -12,4 +12,6 @@ public interface UserService {
     boolean updateUser(UserDto userDto);
 
     boolean updateUserDevices(Long id, List<DeviceDto> deviceDtos);
+
+    List<DeviceDto> findAllDevicesForUser(Long id);
 }

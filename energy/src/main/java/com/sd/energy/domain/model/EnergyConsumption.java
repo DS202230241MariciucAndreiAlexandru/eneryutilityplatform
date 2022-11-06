@@ -20,6 +20,7 @@ public class EnergyConsumption {
     private Long id;
 
     private LocalDateTime timeStamp;
+    private double energy;
 
     @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = FetchType.EAGER)

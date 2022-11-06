@@ -59,6 +59,9 @@ export default {
     errorMessages: "Incearca cu un alt username!",
     errorMessageFlag: false
   }),
+  mounted() {
+    localStorage.clear();
+  },
   methods: {
     register() {
       const registerForm = {username: this.username, password: this.password, role: this.selectedRole};

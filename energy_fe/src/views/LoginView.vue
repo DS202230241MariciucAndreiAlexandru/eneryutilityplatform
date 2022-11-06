@@ -80,6 +80,7 @@ export default {
     }
   },
   mounted() {
+    localStorage.clear();
     if (this.afterRegister) {
       const username = this.afterRegister.username;
       console.log(username);
