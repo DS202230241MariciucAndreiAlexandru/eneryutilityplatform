@@ -50,7 +50,7 @@
 
                         <v-list-item-content>
                           <v-list-item-title>
-                            {{ item.description }} : {{ item.address }}
+                            {{ item.description }} : {{ item.address.name }}
                           </v-list-item-title>
                         </v-list-item-content>
 
@@ -77,7 +77,7 @@
           <v-btn
               color="blue darken-1"
               text
-              @click="dialog = false">
+              @click="updateHandler">
             Update
           </v-btn>
         </v-card-actions>
@@ -99,28 +99,35 @@ export default {
   data: () => ({
     dialog: false,
     updatedUser: {
+      id: null,
       username: '',
       devices: []
     }
   }),
   mounted() {
+    this.updatedUser.id = this.user.id;
     this.updatedUser.username = this.user.username;
 
     // fetch devices again!
     const adminStore = useAdminStore();
     adminStore.getDevices();
-    console.log(this.user.devices);
-    console.log(adminStore.devices);
 
     this.updatedUser.devices = adminStore.devices.map(device => {
       const checked = this.user.devices.filter(d => d.id === device.id).length > 0;
       return {
         id: device.id,
-        address: device.address.name,
+        address: device.address,
         description: device.description,
         checked
       }
     });
+  },
+  methods: {
+    updateHandler() {
+      this.dialog = false;
+      const adminStore = useAdminStore();
+      adminStore.updateUser(this.updatedUser);
+    }
   }
 }
 </script>
