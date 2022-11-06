@@ -1,6 +1,7 @@
 package com.sd.energy.domain.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,9 +24,15 @@ public class Device {
 
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @ManyToOne(fetch = FetchType.EAGER)
     private Address address;
 
-    @OneToMany(mappedBy = "device", fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "device", fetch = FetchType.EAGER)
     private Set<EnergyConsumption> energyConsumption = new HashSet<>();
+
+    @EqualsAndHashCode.Exclude
+    @ManyToOne
+    private User user;
 }

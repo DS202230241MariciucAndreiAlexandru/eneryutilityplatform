@@ -40,7 +40,7 @@
 <script>
 
 import roles from "@/utils/roleUtil";
-import axios from "axios";
+import axios from "@/plugins/myAxios";
 
 export default {
   name: "RegisterView",

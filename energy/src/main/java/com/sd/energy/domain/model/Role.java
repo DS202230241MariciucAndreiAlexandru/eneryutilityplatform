@@ -1,6 +1,7 @@
 package com.sd.energy.domain.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,6 +28,7 @@ public class Role implements GrantedAuthority {
 
     private String authority;
 
-    @ManyToMany(mappedBy = "authorities", fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(mappedBy = "authorities", fetch = FetchType.EAGER)
     private Set<User> users = new HashSet<>();
 }

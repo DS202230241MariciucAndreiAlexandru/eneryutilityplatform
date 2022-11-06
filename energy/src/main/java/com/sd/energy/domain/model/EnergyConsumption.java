@@ -1,6 +1,7 @@
 package com.sd.energy.domain.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 
@@ -20,6 +21,7 @@ public class EnergyConsumption {
 
     private LocalDateTime timeStamp;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @ManyToOne(fetch = FetchType.EAGER)
     private Device device;
 }

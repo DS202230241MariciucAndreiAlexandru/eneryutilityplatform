@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import roles from '../utils/roleUtil'
-import {useAuthStore} from "@/store/useAuthStore";
 
 Vue.use(VueRouter);
 
@@ -52,13 +51,14 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    const authStore = useAuthStore();
 
     if (roles.ANONYMOUS === to.meta.role) {
         next();
     } else {
-        if (authStore.isAuthenticated) {
-            if (authStore.role !== to.meta.role) {
+        const currUser = JSON.parse(localStorage.getItem("user"));
+
+        if (currUser) {
+            if (currUser.role !== to.meta.role) {
                 next({path: '/404'})
             } else {
                 next();

@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import axios from "axios";
+import axios from "@/plugins/myAxios";
 
 
 export const useAuthStore = defineStore("authStore", {
@@ -15,14 +15,15 @@ export const useAuthStore = defineStore("authStore", {
                 const response = await axios.post("/login", loginForm);
 
                 this.jwtToken = response.headers['authorization'];
-                axios.defaults.headers.common['Authorization'] = `Bearer ${this.jwtToken}`;
+                localStorage.setItem("jwt", this.jwtToken);
 
                 const userDto = response.data;
 
                 this.role = userDto.role;
                 this.username = userDto.username;
                 this.isAuthenticated = true;
-                console.log(`is auth: ${this.isAuthenticated}`);
+
+                localStorage.setItem("user", JSON.stringify(userDto));
             } catch (err) {
                 this.isAuthenticated = false;
             }

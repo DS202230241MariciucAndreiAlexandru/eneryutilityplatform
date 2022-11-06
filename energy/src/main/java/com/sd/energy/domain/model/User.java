@@ -1,5 +1,6 @@
 package com.sd.energy.domain.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -33,13 +35,18 @@ public class User implements UserDetails {
     private String username;
     private String password;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(fetch = FetchType.EAGER)
     //    @JoinTable(
     //        name = "user_roles",
     //        joinColumns = {@JoinColumn(name = "user_id")},
     //        inverseJoinColumns = {@JoinColumn(name = "role_id")}
     //    )
     private Set<Role> authorities = new HashSet<>();
+
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "user")
+    private Set<Device> devices = new HashSet<>();
 
     @Override
     public Set<Role> getAuthorities() {

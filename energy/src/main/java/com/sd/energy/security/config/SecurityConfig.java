@@ -65,7 +65,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable();
+        http.cors().and().csrf().disable();
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER);
 
@@ -106,21 +106,5 @@ public class SecurityConfig {
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
         return jwtAuthenticationConverter;
     }
-
-    //    @Bean
-    //    CorsConfigurationSource corsConfigurationSource() {
-    //        CorsConfiguration configuration = new CorsConfiguration();
-    //        configuration.setAllowedOrigins(List.of("*"));
-    //        configuration.setAllowedMethods(List.of("*"));
-    //        configuration.setExposedHeaders(List.of("*"));
-    //        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    //        source.registerCorsConfiguration("/**", configuration);
-    //        return source;
-    //    }
-
-    //    @Bean
-    //    GrantedAuthorityDefaults grantedAuthorityDefaults() {
-    //        return new GrantedAuthorityDefaults(""); // Remove the ROLE_ prefix
-    //    }
 
 }
