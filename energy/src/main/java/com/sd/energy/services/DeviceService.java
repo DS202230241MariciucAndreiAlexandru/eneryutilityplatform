@@ -17,4 +17,6 @@ public interface DeviceService {
     UserDto findByDevice(Long id);
 
     boolean updateDeviceWithUser(Long userId, Long deviceId);
+
+    DeviceDto createOrUpdate(DeviceDto deviceDto);
 }

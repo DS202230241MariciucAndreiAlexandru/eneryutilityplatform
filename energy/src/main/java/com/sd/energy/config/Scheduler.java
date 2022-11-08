@@ -26,7 +26,7 @@ public class Scheduler {
     @Resource
     private EnergyConsumptionRepository energyConsumptionRepository;
 
-    @Scheduled(fixedRate = 1000 * 60 * 5)
+    @Scheduled(fixedRate = 1000)
     void populateSomeValue() {
         StreamSupport.stream(deviceRepository.findAll().spliterator(), false)
                      .forEach(device -> {

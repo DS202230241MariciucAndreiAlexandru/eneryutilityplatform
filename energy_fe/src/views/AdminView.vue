@@ -39,7 +39,20 @@
             >
               <AdminDeviceCard :device="device"/>
             </v-col>
+            <v-col
+                cols="12"
+                md="4">
+              <v-card>
+                <v-card-title>
+                  <span class="text-h5">Create new device</span>
+                </v-card-title>
+                <v-card-actions>
+                  <DeviceUpdateComponent :device="null"/>
+                </v-card-actions>
+              </v-card>
+            </v-col>
           </v-row>
+
         </v-container>
       </v-tab-item>
     </v-tabs>
@@ -52,12 +65,14 @@ import {useAuthStore} from "@/store/useAuthStore";
 import {useAdminStore} from "@/store/useAdminStore";
 import UserCard from "@/components/UserCard";
 import AdminDeviceCard from "@/components/AdminDeviceCard";
+import DeviceUpdateComponent from "@/components/DeviceUpdateComponent";
 
 export default {
   name: "AdminView",
   components: {
     UserCard,
-    AdminDeviceCard
+    AdminDeviceCard,
+    DeviceUpdateComponent
   },
   setup() {
     const authStore = useAuthStore();

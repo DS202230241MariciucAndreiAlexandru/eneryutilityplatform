@@ -13,7 +13,7 @@
     </v-card-text>
     <v-divider/>
     <v-card-actions>
-      <!--      <UserUpdateComponent :user="user"/>-->
+      <DeviceUpdateComponent :device="device"/>
       <v-btn icon @click="deleteDevice">
         <v-icon>mdi-delete</v-icon>
       </v-btn>
@@ -24,6 +24,7 @@
 <script>
 import axios from "@/plugins/myAxios";
 import {useAdminStore} from "@/store/useAdminStore";
+import DeviceUpdateComponent from "@/components/DeviceUpdateComponent";
 
 export default {
   name: "AdminDeviceCard",
@@ -31,6 +32,9 @@ export default {
     const adminStore = useAdminStore();
 
     return {adminStore}
+  },
+  components: {
+    DeviceUpdateComponent
   },
   props: {
     device: null,

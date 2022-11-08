@@ -6,8 +6,10 @@ import com.sd.energy.domain.dto.UserDto;
 import com.sd.energy.domain.mapper.DeviceMapper;
 import com.sd.energy.domain.mapper.EnergyMapper;
 import com.sd.energy.domain.mapper.UserMapper;
+import com.sd.energy.domain.model.Address;
 import com.sd.energy.domain.model.Device;
 import com.sd.energy.domain.model.User;
+import com.sd.energy.repository.AddressRepository;
 import com.sd.energy.repository.DeviceRepository;
 import com.sd.energy.security.repository.UserRepository;
 import com.sd.energy.services.DeviceService;
@@ -32,6 +34,7 @@ public class DeviceServiceImpl implements DeviceService {
     private final UserRepository userRepository;
     private final EnergyMapper energyMapper;
     private final UserMapper userMapper;
+    private final AddressRepository addressRepository;
 
     @Override
     public List<DeviceDto> findAll(Long id) {
@@ -90,5 +93,29 @@ public class DeviceServiceImpl implements DeviceService {
         deviceRepository.save(device);
 
         return true;
+    }
+
+    @Override
+    public DeviceDto createOrUpdate(DeviceDto deviceDto) {
+        Device d;
+        if (deviceDto.id() != null) {
+            d = deviceRepository.findById(deviceDto.id()).get();
+            d.setDescription(deviceDto.description());
+        } else {
+            d = new Device();
+            d.setDescription(deviceDto.description());
+        }
+
+        if (d.getAddress() == null) {
+            var a = new Address();
+            addressRepository.save(a);
+            a.setName(deviceDto.address().name());
+            d.setAddress(a);
+        } else {
+            Address address = d.getAddress();
+            address.setName(deviceDto.address().name());
+        }
+
+        return deviceMapper.deviceToDto(deviceRepository.save(d));
     }
 }
