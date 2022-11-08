@@ -9,7 +9,6 @@ import com.sd.energy.repository.DeviceRepository;
 import com.sd.energy.services.DeviceService;
 import lombok.RequiredArgsConstructor;
 
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collections;
@@ -29,8 +28,9 @@ public class DeviceServiceImpl implements DeviceService {
     private final EnergyMapper energyMapper;
 
     @Override
-    public List<DeviceDto> findAll() {
+    public List<DeviceDto> findAll(Long id) {
         return StreamSupport.stream(deviceRepository.findAll().spliterator(), false)
+                            .filter(device -> device.getUser() == null || device.getUser().getId().equals(id))
                             .map(deviceMapper::deviceToDto)
                             .collect(Collectors.toList());
     }

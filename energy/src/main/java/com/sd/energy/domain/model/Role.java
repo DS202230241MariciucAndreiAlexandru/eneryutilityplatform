@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -29,6 +30,6 @@ public class Role implements GrantedAuthority {
     private String authority;
 
     @EqualsAndHashCode.Exclude
-    @ManyToMany(mappedBy = "authorities", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "authorities", fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     private Set<User> users = new HashSet<>();
 }

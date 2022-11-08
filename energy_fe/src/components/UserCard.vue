@@ -2,7 +2,7 @@
   <v-card elevation="5">
     <v-card-title>{{ user.username }}</v-card-title>
     <v-card-subtitle>{{ user.role }}</v-card-subtitle>
-    <v-card-text v-if="!isAdmin">
+    <v-card-text v-if="!isHide">
       <v-select
           :items="user.devices"
           label="Vezi device-urile"
@@ -18,7 +18,7 @@
     <v-divider/>
     <v-card-actions>
       <UserUpdateComponent :user="user"/>
-      <v-btn icon v-if="!isAdmin">
+      <v-btn icon v-if="!isHide">
         <v-icon>mdi-delete</v-icon>
       </v-btn>
     </v-card-actions>
@@ -36,6 +36,10 @@ export default {
   props: {
     user: null,
     isAdmin: {
+      type: Boolean,
+      default: false
+    },
+    isHide: {
       type: Boolean,
       default: false
     }

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -36,7 +37,7 @@ public class User implements UserDetails {
     private String password;
 
     @EqualsAndHashCode.Exclude
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     //    @JoinTable(
     //        name = "user_roles",
     //        joinColumns = {@JoinColumn(name = "user_id")},
@@ -45,7 +46,7 @@ public class User implements UserDetails {
     private Set<Role> authorities = new HashSet<>();
 
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.DETACH)
     private Set<Device> devices = new HashSet<>();
 
     @Override

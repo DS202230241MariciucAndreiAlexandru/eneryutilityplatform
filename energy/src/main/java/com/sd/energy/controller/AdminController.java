@@ -49,8 +49,8 @@ public class AdminController {
         return userService.updateUserDevices(id, devices);
     }
 
-    @GetMapping("/devices")
-    public List<DeviceDto> getDevices() {
-        return deviceService.findAll();
+    @GetMapping("/{id}/devices")
+    public List<DeviceDto> getDevices(@PathVariable Long id) {
+        return deviceService.findAll(id);
     }
 }

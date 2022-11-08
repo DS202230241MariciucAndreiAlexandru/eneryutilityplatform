@@ -6,7 +6,12 @@ export const useAdminStore = defineStore("adminStore", {
     state: () => ({
         users: [],
         devices: [],
-        currentAdmin: JSON.parse(localStorage.getItem('user'))
+        currentAdmin: JSON.parse(localStorage.getItem('user')),
+        updatedUser: {
+            id: null,
+            username: '',
+            devices: []
+        }
     }),
     getters: {
         simpleUsers() {
@@ -14,6 +19,25 @@ export const useAdminStore = defineStore("adminStore", {
         }
     },
     actions: {
+        initUpdatedUser(user) {
+            this.updatedUser.id = user.id;
+            this.updatedUser.username = user.username;
+            // {
+            //     id: id,
+            //     username: username,
+            //     devices: [{id: 19, description: "Huawei", address: {id: 15, name: "Baritiu"}}]
+            // };
+
+            this.updatedUser.devices = this.devices.map(device => {
+                const checked = user.devices.filter(d => d.id === device.id).length > 0;
+                return {
+                    id: device.id,
+                    address: device.address,
+                    description: device.description,
+                    checked
+                }
+            });
+        },
         async getUsers() {
             try {
                 const response = await axios.get("/admin/users");
@@ -22,9 +46,9 @@ export const useAdminStore = defineStore("adminStore", {
                 console.error(e);
             }
         },
-        async getDevices() {
+        async getDevices(id) {
             try {
-                const response = await axios.get("/admin/devices");
+                const response = await axios.get(`/admin/${id}/devices`);
                 this.devices = response.data;
             } catch (e) {
                 console.error(e);
@@ -34,12 +58,19 @@ export const useAdminStore = defineStore("adminStore", {
             const user = this.users.find(u => u.id === updatedUser.id);
             if (!user) return;
 
+            let r = true;
+
             axios.put("/admin/update-user", {id: updatedUser.id, username: updatedUser.username})
                 .then(response => {
+                    if (user.id === this.currentAdmin.id) {
+                        this.currentAdmin.username = user.username;
+                    }
                     user.username = updatedUser.username;
+                    r = r && response.data;
                 })
                 .catch(err => {
                     console.error(err);
+                    r = false;
                 });
 
             axios.put(`/admin/user/${updatedUser.id}/update-devices`, updatedUser.devices).then(response => {
@@ -49,7 +80,13 @@ export const useAdminStore = defineStore("adminStore", {
                     if (!d) return true;
                     return d.checked;
                 });
-            }).catch(err => console.error(err));
+                r = r && response.data;
+            }).catch(err => {
+                console.error(err);
+                r = false;
+            });
+
+            return r;
         }
     }
 });

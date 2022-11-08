@@ -10,7 +10,7 @@
       <v-tab>Users</v-tab>
       <v-tab>Devices</v-tab>
       <v-tab-item>
-        <UserCard :user="adminStore.currentAdmin" :isAdmin="true"/>
+        <UserCard :user="adminStore.currentAdmin" :is-hide="true"/>
       </v-tab-item>
       <v-tab-item>
         <v-container fluid>
@@ -21,8 +21,6 @@
                 cols="12"
                 md="4"
             >
-              <!--              {{ user.username }} <br>-->
-              <!--              {{ user.role }} <br>-->
               <UserCard :user="user"/>
             </v-col>
           </v-row>

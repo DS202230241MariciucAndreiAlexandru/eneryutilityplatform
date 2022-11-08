@@ -9,7 +9,7 @@
       <v-tab>Profile</v-tab>
       <v-tab>Devices</v-tab>
       <v-tab-item>
-        <UserCard :user="userStore.user" :isAdmin="true"/>
+        <UserCard :user="userStore.user" :is-hide="true"/>
       </v-tab-item>
       <v-tab-item>
         <v-container fluid>

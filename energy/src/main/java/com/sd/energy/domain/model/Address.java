@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -24,6 +25,6 @@ public class Address {
     private String name;
 
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "address", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "address", fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     private Set<Device> devices = new HashSet<>();
 }

@@ -4,10 +4,8 @@ import com.sd.energy.domain.model.EnergyConsumption;
 import com.sd.energy.repository.DeviceRepository;
 import com.sd.energy.repository.EnergyConsumptionRepository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAmount;
 import java.util.Random;
 import java.util.stream.StreamSupport;
 
@@ -31,15 +29,14 @@ public class Scheduler {
     private EnergyConsumptionRepository energyConsumptionRepository;
 
     @Async
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRate = 1000 * 60 * 60)
     void populateSomeValue() {
         StreamSupport.stream(deviceRepository.findAll().spliterator(), true)
                      .forEach(device -> {
                          var en = new EnergyConsumption();
-                         en.setTimeStamp(LocalDateTime.now().plus(1, ChronoUnit.DAYS));
+                         en.setTimeStamp(LocalDateTime.now());
                          en.setEnergy(new Random().nextDouble());
                          en.setDevice(device);
-//                         System.out.println(en.getEnergy());
                          energyConsumptionRepository.save(en);
                      });
     }

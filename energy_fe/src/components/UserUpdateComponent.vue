@@ -1,15 +1,13 @@
 <template>
   <v-container justify="center">
+    <!--    <GlobalAlert/>-->
+    <v-btn icon @click.stop="load">
+      <v-icon>mdi-update</v-icon>
+    </v-btn>
     <v-dialog
         v-model="dialog"
-        persistent
         max-width="600px"
     >
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn icon v-bind="attrs" v-on="on">
-          <v-icon>mdi-update</v-icon>
-        </v-btn>
-      </template>
       <v-card>
         <v-card-title>
           <span class="text-h5">User Update</span>
@@ -19,7 +17,7 @@
             <v-row>
               <v-text-field
                   label="username"
-                  v-model="updatedUser.username"
+                  v-model="adminStore.updatedUser.username"
                   required/>
             </v-row>
             <v-row>
@@ -30,8 +28,7 @@
                 <v-row>
                   <v-virtual-scroll
                       class="flex-row"
-                      :bench="benched"
-                      :items="updatedUser.devices"
+                      :items="adminStore.updatedUser.devices"
                       height="300"
                       item-height="64">
 
@@ -93,36 +90,38 @@ import {useAdminStore} from "@/store/useAdminStore";
 
 export default {
   name: "UserUpdateComponent",
+  components: {
+    // GlobalAlert: () => import("@/components/GlobalAlert")
+  },
   props: {
-    user: null
+    user: null,
+    updatedUser: null
+  },
+  setup() {
+    const adminStore = useAdminStore();
+
+    return {adminStore};
   },
   data: () => ({
     dialog: false,
-    updatedUser: {
-      id: null,
-      username: '',
-      devices: []
-    }
   }),
   mounted() {
-    this.updatedUser.id = this.user.id;
-    this.updatedUser.username = this.user.username;
-
-    // fetch devices again!
-    const adminStore = useAdminStore();
-    adminStore.getDevices();
-
-    this.updatedUser.devices = adminStore.devices.map(device => {
-      const checked = this.user.devices.filter(d => d.id === device.id).length > 0;
-      return {
-        id: device.id,
-        address: device.address,
-        description: device.description,
-        checked
-      }
-    });
+    // this.load(false);
+    this.adminStore.getDevices(this.user.id);
+    this.adminStore.initUpdatedUser(this.user);
   },
   methods: {
+    load(v) {
+      console.log("sunt in load");
+
+      // fetch devices again!
+      this.adminStore.getDevices(this.user.id);
+      this.adminStore.initUpdatedUser(this.user);
+      if(v)
+        this.dialog = v;
+      else
+        this.dialog = true;
+    },
     updateHandler() {
       this.dialog = false;
       const adminStore = useAdminStore();

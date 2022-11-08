@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -29,7 +30,7 @@ public class Device {
     private Address address;
 
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "device", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "device", fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     private Set<EnergyConsumption> energyConsumption = new HashSet<>();
 
     @EqualsAndHashCode.Exclude

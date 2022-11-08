@@ -16,22 +16,17 @@
           <span class="text-h5">Consumul din data: {{ date }} </span>
         </v-card-title>
         <v-card-text>
-          <v-sparkline
-              :value="value"
-              :gradient="gradient"
-              :smooth="radius || false"
-              :padding="padding"
-              :line-width="width"
-              :stroke-linecap="lineCap"
-              :gradient-direction="gradientDirection"
-              :fill="fill"
-              :type="type"
-              :auto-line-width="autoLineWidth"
-              :show-labels="true"
-              :labels="labels"
-              auto-draw>
-
-          </v-sparkline>
+          <LineChartGenerator
+              :chart-options="chartOptions"
+              :chart-data="chartData"
+              :chart-id="chartId"
+              :dataset-id-key="datasetIdKey"
+              :plugins="plugins"
+              :css-classes="cssClasses"
+              :styles="styles"
+              :width="width"
+              :height="height"
+          />
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -49,55 +44,93 @@
 
 <script>
 import axios from "@/plugins/myAxios";
+import {Line as LineChartGenerator} from 'vue-chartjs/legacy'
 
-const gradients = [
-  ['#222'],
-  ['#42b3f4'],
-  ['red', 'orange', 'yellow'],
-  ['purple', 'violet'],
-  ['#00c6ff', '#F0F', '#FF0'],
-  ['#f72047', '#ffd200', '#1feaea'],
-];
+import {CategoryScale, Chart as ChartJS, Legend, LinearScale, LineElement, PointElement, Title, Tooltip} from 'chart.js'
+
+ChartJS.register(
+    Title,
+    Tooltip,
+    Legend,
+    LineElement,
+    LinearScale,
+    CategoryScale,
+    PointElement
+)
 
 export default {
   name: "ChartComponent",
-  props: ["deviceId", "date"],
+  components: {
+    LineChartGenerator
+  },
+  props: {
+    deviceId: Number,
+    date: String,
+    chartId: {
+      type: String,
+      default: 'line-chart'
+    },
+    datasetIdKey: {
+      type: String,
+      default: 'label'
+    },
+    width: {
+      type: Number,
+      default: 600
+    },
+    height: {
+      type: Number,
+      default: 600
+    },
+    cssClasses: {
+      default: '',
+      type: String
+    },
+    styles: {
+      type: Object,
+      default: () => {
+      }
+    },
+    plugins: {
+      type: Array,
+      default: () => []
+    }
+  },
   data: () => ({
     dialog: false,
-    width: 1,
-    radius: 10,
-    padding: 8,
-    lineCap: 'round',
-    gradient: gradients[5],
-    labels: [],
-    value: [],
-    gradientDirection: 'top',
-    gradients,
-    fill: false,
-    type: 'trend',
-    autoLineWidth: false,
+    chartData: {
+      labels: [],
+      datasets: [
+        {
+          label: 'E[kWh]',
+          backgroundColor: '#f87979',
+          data: []
+        }
+      ]
+    },
+    chartOptions: {
+      responsive: true,
+      maintainAspectRatio: false
+    }
   }),
   watch: {
-    date(newDate, oldDate) {
-      axios.get(`/user/device/${this.deviceId}/consumption?date=${newDate}`)
-          .then(response => {
-            const ec = response.data;
-            this.value = ec.map(e => e.energy * 10);
-            this.labels = ec.map(e => e.timeStamp);
-            console.log(this.labels);
-          })
-          .catch(error => console.error(error));
+    date(newDate, _) {
+      this.updateChar(newDate);
     }
   },
   mounted() {
-    axios.get(`/user/device/${this.deviceId}/consumption?date=${this.date}`)
-        .then(response => {
-          const ec = response.data;
-          this.value = ec.map(e => e.energy);
-          this.labels = ec.map(e => e.timeStamp);
-          console.log(this.labels);
-        })
-        .catch(error => console.error(error));
+    this.updateChar(this.date);
+  },
+  methods: {
+    updateChar(d) {
+      axios.get(`/user/device/${this.deviceId}/consumption?date=${d}`)
+          .then(response => {
+            const ec = response.data;
+            this.chartData.datasets[0].data = ec.map(e => e.energy);
+            this.chartData.labels = ec.map(e => e.timeStamp);
+          })
+          .catch(error => console.error(error));
+    }
   }
 }
 </script>

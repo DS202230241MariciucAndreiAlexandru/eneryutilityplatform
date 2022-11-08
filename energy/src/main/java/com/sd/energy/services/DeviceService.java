@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface DeviceService {
 
-    List<DeviceDto> findAll();
+    List<DeviceDto> findAll(Long id);
 
     List<EnergyConsumptionDto> findAllConsumptionForIdAndDate(Long id, String date);
 }
