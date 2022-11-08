@@ -30,6 +30,6 @@ public class Role implements GrantedAuthority {
     private String authority;
 
     @EqualsAndHashCode.Exclude
-    @ManyToMany(mappedBy = "authorities", fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @ManyToMany(mappedBy = "authorities", fetch = FetchType.EAGER)
     private Set<User> users = new HashSet<>();
 }

@@ -1,13 +1,15 @@
 <template>
   <v-container justify="center">
     <!--    <GlobalAlert/>-->
-    <v-btn icon @click.stop="load">
-      <v-icon>mdi-update</v-icon>
-    </v-btn>
     <v-dialog
         v-model="dialog"
         max-width="600px"
     >
+      <template v-slot:activator="{on, attrs}">
+        <v-btn icon v-bind="attrs" v-on="on">
+          <v-icon>mdi-update</v-icon>
+        </v-btn>
+      </template>
       <v-card>
         <v-card-title>
           <span class="text-h5">User Update</span>
@@ -17,7 +19,7 @@
             <v-row>
               <v-text-field
                   label="username"
-                  v-model="adminStore.updatedUser.username"
+                  v-model="updatedUser.username"
                   required/>
             </v-row>
             <v-row>
@@ -28,7 +30,7 @@
                 <v-row>
                   <v-virtual-scroll
                       class="flex-row"
-                      :items="adminStore.updatedUser.devices"
+                      :items="updatedUser.devices"
                       height="300"
                       item-height="64">
 
@@ -95,7 +97,6 @@ export default {
   },
   props: {
     user: null,
-    updatedUser: null
   },
   setup() {
     const adminStore = useAdminStore();
@@ -104,28 +105,33 @@ export default {
   },
   data: () => ({
     dialog: false,
+    updatedUser: {
+      id: null,
+      username: null,
+      devices: []
+    }
   }),
   mounted() {
-    // this.load(false);
-    this.adminStore.getDevices(this.user.id);
-    this.adminStore.initUpdatedUser(this.user);
+    this.loadDevicesForUser()
   },
   methods: {
-    load(v) {
-      console.log("sunt in load");
+    loadDevicesForUser() {
+      this.updatedUser.id = this.user.id;
+      this.updatedUser.username = this.user.username;
 
-      // fetch devices again!
-      this.adminStore.getDevices(this.user.id);
-      this.adminStore.initUpdatedUser(this.user);
-      if(v)
-        this.dialog = v;
-      else
-        this.dialog = true;
+      this.updatedUser.devices = this.user.devices.map(device => {
+        return {
+          id: device.id,
+          address: device.address,
+          description: device.description,
+          checked: true
+        }
+      });
     },
     updateHandler() {
       this.dialog = false;
-      const adminStore = useAdminStore();
-      adminStore.updateUser(this.updatedUser);
+      this.adminStore.updateUser(this.updatedUser);
+      window.location.reload();
     }
   }
 }

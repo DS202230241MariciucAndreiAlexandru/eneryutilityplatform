@@ -30,10 +30,10 @@ public class Device {
     private Address address;
 
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "device", fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @OneToMany(mappedBy = "device", fetch = FetchType.EAGER)
     private Set<EnergyConsumption> energyConsumption = new HashSet<>();
 
     @EqualsAndHashCode.Exclude
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH})
     private User user;
 }

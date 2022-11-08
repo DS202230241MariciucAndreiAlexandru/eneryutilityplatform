@@ -24,6 +24,6 @@ public class EnergyConsumption {
     private double energy;
 
     @EqualsAndHashCode.Exclude
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Device device;
 }

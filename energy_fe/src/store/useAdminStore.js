@@ -7,11 +7,6 @@ export const useAdminStore = defineStore("adminStore", {
         users: [],
         devices: [],
         currentAdmin: JSON.parse(localStorage.getItem('user')),
-        updatedUser: {
-            id: null,
-            username: '',
-            devices: []
-        }
     }),
     getters: {
         simpleUsers() {
@@ -19,25 +14,6 @@ export const useAdminStore = defineStore("adminStore", {
         }
     },
     actions: {
-        initUpdatedUser(user) {
-            this.updatedUser.id = user.id;
-            this.updatedUser.username = user.username;
-            // {
-            //     id: id,
-            //     username: username,
-            //     devices: [{id: 19, description: "Huawei", address: {id: 15, name: "Baritiu"}}]
-            // };
-
-            this.updatedUser.devices = this.devices.map(device => {
-                const checked = user.devices.filter(d => d.id === device.id).length > 0;
-                return {
-                    id: device.id,
-                    address: device.address,
-                    description: device.description,
-                    checked
-                }
-            });
-        },
         async getUsers() {
             try {
                 const response = await axios.get("/admin/users");
@@ -46,9 +22,9 @@ export const useAdminStore = defineStore("adminStore", {
                 console.error(e);
             }
         },
-        async getDevices(id) {
+        async getDevices() {
             try {
-                const response = await axios.get(`/admin/${id}/devices`);
+                const response = await axios.get(`/admin/devices`);
                 this.devices = response.data;
             } catch (e) {
                 console.error(e);
@@ -80,6 +56,7 @@ export const useAdminStore = defineStore("adminStore", {
                     if (!d) return true;
                     return d.checked;
                 });
+                console.log(user.devices);
                 r = r && response.data;
             }).catch(err => {
                 console.error(err);
@@ -87,6 +64,20 @@ export const useAdminStore = defineStore("adminStore", {
             });
 
             return r;
+        },
+        deleteUser(user) {
+            axios.delete(`/admin/delete-user/${user.id}`)
+                .then(response => {
+                    if (response.data) {
+                        this.users.splice(this.users.indexOf(user), 1);
+                    }
+                })
+                .catch(err => console.error(err));
+        },
+        deleteDevice(device) {
+            const i = this.devices.indexOf(device);
+            if (i >= 0)
+                this.devices.splice(i, 1);
         }
     }
 });

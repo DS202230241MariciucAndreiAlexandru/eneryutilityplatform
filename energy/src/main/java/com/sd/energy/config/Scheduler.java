@@ -5,14 +5,12 @@ import com.sd.energy.repository.DeviceRepository;
 import com.sd.energy.repository.EnergyConsumptionRepository;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Random;
 import java.util.stream.StreamSupport;
 
 import javax.annotation.Resource;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -28,10 +26,9 @@ public class Scheduler {
     @Resource
     private EnergyConsumptionRepository energyConsumptionRepository;
 
-    @Async
-    @Scheduled(fixedRate = 1000 * 60 * 60)
+    @Scheduled(fixedRate = 1000 * 60 * 5)
     void populateSomeValue() {
-        StreamSupport.stream(deviceRepository.findAll().spliterator(), true)
+        StreamSupport.stream(deviceRepository.findAll().spliterator(), false)
                      .forEach(device -> {
                          var en = new EnergyConsumption();
                          en.setTimeStamp(LocalDateTime.now());

@@ -59,18 +59,17 @@ public class UserServiceImpl implements UserService {
             return false;
         }
 
-        var newDevices = devices.stream()
-                                .filter(DeviceDto::checked)
-                                .map(DeviceDto::id)
-                                .map(deviceRepository::findById)
-                                .filter(Optional::isPresent)
-                                .map(Optional::get)
-                                .collect(Collectors.toSet());
-
-        var user = byId.get();
-        user.setDevices(newDevices);
-
-        userRepository.save(user);
+        devices.stream()
+               .filter(d -> !d.checked())
+               .map(DeviceDto::id)
+               .map(deviceRepository::findById)
+               .filter(Optional::isPresent)
+               .map(Optional::get)
+               .forEach(device -> {
+                            device.setUser(null);
+                            deviceRepository.save(device);
+                        }
+               );
 
         return true;
     }

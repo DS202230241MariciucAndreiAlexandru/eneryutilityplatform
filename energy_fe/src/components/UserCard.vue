@@ -4,22 +4,21 @@
     <v-card-subtitle>{{ user.role }}</v-card-subtitle>
     <v-card-text v-if="!isHide">
       <v-select
+          v-model="select"
           :items="user.devices"
+          item-text="description"
           label="Vezi device-urile"
       >
-        <template v-slot:selection="{item}">
-          {{ item.description }}:{{ item.address.name }}
-        </template>
-        <template v-slot:item="{item}">
-          {{ item.description }}:{{ item.address.name }}
-        </template>
       </v-select>
     </v-card-text>
     <v-divider/>
     <v-card-actions>
-      <UserUpdateComponent :user="user"/>
-      <v-btn icon v-if="!isHide">
+      <UserUpdateComponent v-if="!isHide" :user="user"/>
+      <v-btn icon v-if="!isHide" @click="deleteUser">
         <v-icon>mdi-delete</v-icon>
+      </v-btn>
+      <v-btn v-if="isHide" icon @click="$router.push({name: 'login'})">
+        <v-icon>mdi-logout</v-icon>
       </v-btn>
     </v-card-actions>
   </v-card>
@@ -27,6 +26,7 @@
 
 <script>
 import UserUpdateComponent from "@/components/UserUpdateComponent";
+import {useAdminStore} from "@/store/useAdminStore";
 
 export default {
   name: "UserCard",
@@ -42,6 +42,22 @@ export default {
     isHide: {
       type: Boolean,
       default: false
+    }
+  },
+  data() {
+    return {
+      select: {
+        description: '',
+        address: {
+          name: ''
+        }
+      }
+    }
+  },
+  methods: {
+    deleteUser() {
+      useAdminStore().deleteUser(this.user);
+      window.location.reload();
     }
   }
 }

@@ -25,6 +25,6 @@ public class Address {
     private String name;
 
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "address", fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
+    @OneToMany(mappedBy = "address", fetch = FetchType.EAGER)
     private Set<Device> devices = new HashSet<>();
 }
