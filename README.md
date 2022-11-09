@@ -1,4 +1,4 @@
-# Enery Utility Platform
+# Energy Utility Platform
 
 ## HOW TO RUN THE APP
 
