@@ -37,9 +37,3 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
-          $(Build.BuildId)
-    - task: CopyFiles@2
-      inputs:
-        SourceFolder: ''
-        Contents: 'docker-compose.yml'
-        TargetFolder: '$(Agent.WorkFolder)'
