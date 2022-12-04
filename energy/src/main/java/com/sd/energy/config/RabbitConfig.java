@@ -27,6 +27,6 @@ public class RabbitConfig {
 
     @Bean
     public Binding binding(Queue queue, TopicExchange topicExchange) {
-        return BindingBuilder.bind(queue).to(topicExchange).with("");
+        return BindingBuilder.bind(queue).to(topicExchange).with("measurements_key");
     }
 }

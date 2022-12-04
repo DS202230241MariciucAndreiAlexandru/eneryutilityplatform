@@ -70,7 +70,7 @@ public class SecurityConfig {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER);
 
         http.authorizeHttpRequests()
-            .antMatchers("/login", "/register").permitAll()
+            .antMatchers("/login", "/register", "/vue-socket-endpoint/**").permitAll()
             .anyRequest()
             .authenticated()
             // Set up oauth2 resource server
