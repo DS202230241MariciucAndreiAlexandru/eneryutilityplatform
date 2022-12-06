@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public record DeviceDto(Long id,
                         String description,
                         AddressDto address,
+                        Double maxEnergyConsumption,
                         Boolean checked) {
 
 }

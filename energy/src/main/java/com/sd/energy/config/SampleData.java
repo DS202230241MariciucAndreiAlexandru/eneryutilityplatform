@@ -81,11 +81,13 @@ public class SampleData {
         device1.setDescription("Samsung");
         device1.setAddress(address);
         device1.setUser(user);
+        device1.setMaxEnergyConsumption(20.3);
 
         var device2 = new Device();
         device2.setDescription("Apple");
         device2.setAddress(address);
         device2.setUser(user);
+        device2.setMaxEnergyConsumption(40.0);
 
         deviceRepository.saveAll(List.of(device1, device2));
     }

@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -25,6 +26,8 @@ public class Device {
     private Long id;
 
     private String description;
+
+    private Double maxEnergyConsumption = 25.0;
 
     @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = FetchType.EAGER)

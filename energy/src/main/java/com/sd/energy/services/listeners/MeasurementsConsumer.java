@@ -10,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 
-import javax.annotation.Resource;
-
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -33,10 +31,16 @@ public class MeasurementsConsumer {
         var energyConsumption = gson.fromJson(message, EnergyConsumptionRabbit.class);
         var energy = toEnergyConsumption(energyConsumption);
 
-        log.info("SAVING..." + energy);
-        energyConsumptionRepository.save(energy);
+        if (energy.getDevice() == null) {
+            return;
+        }
 
-        simpMessagingTemplate.convertAndSend("/warns/alert", "asta e o alerta!");
+        log.info("SAVING..." + energy);
+
+        energyConsumptionRepository.save(energy);
+        
+        log.info("SENDING TO ..." + "/warns/alert/" + energy.getDevice().getId());
+        simpMessagingTemplate.convertAndSend("/warns/alert/" + energy.getDevice().getId(), "" + energy.getEnergy());
     }
 
     EnergyConsumption toEnergyConsumption(EnergyConsumptionRabbit rabbitEnergy) {

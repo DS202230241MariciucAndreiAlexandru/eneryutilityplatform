@@ -116,6 +116,8 @@ public class DeviceServiceImpl implements DeviceService {
             address.setName(deviceDto.address().name());
         }
 
+        d.setMaxEnergyConsumption(deviceDto.maxEnergyConsumption());
+
         return deviceMapper.deviceToDto(deviceRepository.save(d));
     }
 }

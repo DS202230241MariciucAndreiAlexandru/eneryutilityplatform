@@ -21,8 +21,8 @@ public class EnergyConsumption {
     private Long id;
 
     private LocalDateTime timeStamp;
+
     private double energy;
-    private double maxEnergyConsumption = 23;
 
     @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = FetchType.EAGER)
