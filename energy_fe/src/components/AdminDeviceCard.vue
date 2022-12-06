@@ -1,7 +1,8 @@
 <template>
   <v-card elevation="5">
     <v-card-title>{{ device.description }}</v-card-title>
-    <v-card-subtitle>{{ device.address.name }}</v-card-subtitle>
+    <v-card-subtitle>{{ device.address.name}}[{{device.id}}] </v-card-subtitle>
+    <v-card-subtitle>Max consumption: {{ device.maxEnergyConsumption}} </v-card-subtitle>
     <v-card-text>
       <v-select
           :items="adminStore.simpleUsers"

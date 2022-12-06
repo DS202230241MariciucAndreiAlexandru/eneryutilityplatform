@@ -31,5 +31,5 @@ COPY . .
 # build app for production with minification
 # RUN npm run build
 
-EXPOSE 8080
-ENTRYPOINT [ "npm", "run", "serve" ]
+EXPOSE 80
+ENTRYPOINT [ "npm", "run", "serve", "--", "--port", "80"]

@@ -27,6 +27,13 @@
                   v-model="deviceUpdated.address.name"
                   required/>
             </v-row>
+            <v-row>
+              <v-text-field
+                  type="number"
+                  label="Max Consumption"
+                  v-model="deviceUpdated.maxEnergyConsumption"
+                  required/>
+            </v-row>
           </v-container>
         </v-card-text>
         <v-card-actions>
@@ -63,7 +70,8 @@ export default {
       description: '',
       address: {
         name: ''
-      }
+      },
+      maxEnergyConsumption: 0
     }
   }),
   mounted() {

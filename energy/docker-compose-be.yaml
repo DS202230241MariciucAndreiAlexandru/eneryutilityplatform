@@ -1,12 +1,6 @@
 version: '2.1'
 
 services:
-  vue:
-    image: andreimariciuc4.azurecr.io/vue:latest
-    build: ../energy_fe
-    ports:
-      - "80:80"
-
   postgres:
     image: andreimariciuc4.azurecr.io/db:latest
     healthcheck:

@@ -20,7 +20,7 @@
                 cols="12"
                 md="4"
             >
-              <DeviceCard :device="device"/>
+              <DeviceCard :device="device" />
             </v-col>
           </v-row>
         </v-container>
@@ -42,6 +42,12 @@ export default {
     userStore.getDevices();
 
     return {userStore};
+  },
+  data: () => ({
+    // stompClient: null
+  }),
+  mounted() {
+
   }
 }
 </script>

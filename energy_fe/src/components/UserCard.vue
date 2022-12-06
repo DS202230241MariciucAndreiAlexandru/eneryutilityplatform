@@ -27,6 +27,7 @@
 <script>
 import UserUpdateComponent from "@/components/UserUpdateComponent";
 import {useAdminStore} from "@/store/useAdminStore";
+import stompClient from "@/plugins/socket";
 
 export default {
   name: "UserCard",
@@ -59,6 +60,9 @@ export default {
       useAdminStore().deleteUser(this.user);
       window.location.reload();
     }
+  },
+  mounted() {
+
   }
 }
 </script>
