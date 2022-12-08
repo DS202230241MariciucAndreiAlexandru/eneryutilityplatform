@@ -29,7 +29,7 @@
     </v-card-text>
     <v-divider/>
     <v-card-actions>
-      <ChartComponent :deviceId="device.id" :date="picker"/>
+      <ChartComponent :deviceId="device.id" :date="picker" ref="chart"/>
     </v-card-actions>
   </v-card>
 </template>
@@ -56,7 +56,7 @@ export default {
     stompClient.connect({}, () => {
       stompClient.subscribe(`/warns/alert/${this.device.id}`, message => {
         this.lastEnergy = +(message.body);
-        console.log(this.lastEnergy);
+        this.$refs.chart.updateCharRef();
       });
     });
   },

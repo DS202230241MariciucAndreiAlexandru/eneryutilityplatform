@@ -13,6 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>energy_producer</name>
 	<description>energy_producer</description>
+	<packaging>jar</packaging>
 	<properties>
 		<java.version>19</java.version>
 	</properties>

@@ -130,6 +130,10 @@ export default {
             this.chartData.labels = ec.map(e => e.timeStamp);
           })
           .catch(error => console.error(error));
+    },
+    updateCharRef() {
+      const d = new Date().toISOString().substr(0, 10);
+      this.updateChar(d);
     }
   }
 }

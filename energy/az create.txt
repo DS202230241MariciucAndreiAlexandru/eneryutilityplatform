@@ -1,0 +1,12 @@
+az container create --resource-group AndreiMariciuc4 --name energy --image andreimariciuc4.azurecr.io/vue:latest --cpu 1 --memory 1 --registry-login-server andreimariciuc4.azurecr.io --registry-username andreimariciuc4 --registry-password /u8/v=Irw51VTkNWj08=mOw5TM4MNQUM --ip-address Public --dns-name-label doarunlabelbe --ports 80
+
+
+az container show --resource-group AndreiMariciuc4 --name energyapp --query instanceView.state
+
+az container show --resource-group AndreiMariciuc4 --name energyapp --query ipAddress.fqdn
+
+az container create --resource-group AndreiMariciuc4 --name energy --multicontainer-config-type compose --multicontainer-config-file docker-compose-be.yaml --cpu 2 --memory 2 --registry-login-server andreimariciuc4.azurecr.io --registry-username andreimariciuc4 --registry-password /u8/v=Irw51VTkNWj08=mOw5TM4MNQUM --ip-address Public --dns-name-label doarunlabelbe --ports 8090   
+
+az container export -g MyResourceGroup --name mynginx -f output.yaml
+
+az container create -g AndreiMariciuc4 --file energy.yaml

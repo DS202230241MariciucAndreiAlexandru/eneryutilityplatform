@@ -1,0 +1,118 @@
+additional_properties: {}
+apiVersion: '2021-09-01'
+extended_location: null
+identity: null
+location: germanywestcentral
+name: energy
+properties:
+  containers:
+  - name: vue
+    properties:
+      environmentVariables: []
+      image: andreimariciuc4.azurecr.io/vue:latest
+      ports:
+      - port: 80
+        protocol: TCP
+      resources:
+        limits:
+          cpu: 1.0
+          memoryInGB: 1.0
+        requests:
+          cpu: 1.0
+          memoryInGB: 1.0
+  - name: energydbcontainer
+    properties:
+      environmentVariables:
+      - name: POSTGRES_USER
+        value: root
+      - name: POSTGRES_PASSWORD
+        value: root
+      - name: POSTGRES_DB
+        value: energydb
+      - name: POSTGRES_HOST_AUTH_METHOD
+        value: trust
+      image: andreimariciuc4.azurecr.io/db:latest
+      livenessProbe:
+        exec:
+          command:
+          - pg_isready
+          - -q
+          - -d
+          - postgres
+          - -U
+          - root
+        failureThreshold: 5
+        periodSeconds: 10
+        timeoutSeconds: 45
+      ports:
+      - port: 5432
+        protocol: TCP
+      resources:
+        limits:
+          cpu: 1.0
+          memoryInGB: 1.0
+        requests:
+          cpu: 1.0
+          memoryInGB: 1.0
+  - name: demo-be
+    properties:
+      environmentVariables:
+      - name: DB_PORT
+        value: '5432'
+      - name: DB_USER
+        value: root
+      - name: DB_PASSWORD
+        value: root
+      - name: DB_DBNAME
+        value: energydb
+      - name: DB_IP
+        value: energydbcontainer
+      image: andreimariciuc4.azurecr.io/be:latest
+      ports:
+      - port: 8090
+        protocol: TCP
+      resources:
+        limits:
+          cpu: 1.0
+          memoryInGB: 1.0
+        requests:
+          cpu: 1.0
+          memoryInGB: 1.0
+  - name: aci--dns--sidecar
+    properties:
+      command:
+      - /hosts
+      - vue
+      - postgres
+      - energydbcontainer
+      - demo-be
+      environmentVariables: []
+      image: docker/aci-hostnames-sidecar:1.0
+      ports: []
+      resources:
+        requests:
+          cpu: 0.01
+          memoryInGB: 0.1
+  imageRegistryCredentials:
+  - server: andreimariciuc4.azurecr.io
+    username: andreimariciuc4
+    password: /u8/v=Irw51VTkNWj08=mOw5TM4MNQUM
+  initContainers: []
+  ipAddress:
+    dnsNameLabel: andreimariciuc4
+    fqdn: andreimariciuc4.germanywestcentral.azurecontainer.io
+    ip: 20.113.23.222
+    ports:
+    - port: 80
+      protocol: TCP
+    - port: 5432
+      protocol: TCP
+    - port: 8090
+      protocol: TCP
+    type: Public
+  osType: Linux
+  restartPolicy: Always
+  sku: Standard
+tags:
+  docker-compose-application: docker-compose-application
+type: Microsoft.ContainerInstance/containerGroups
