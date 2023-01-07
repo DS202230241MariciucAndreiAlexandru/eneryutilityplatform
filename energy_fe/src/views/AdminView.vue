@@ -23,7 +23,7 @@
                 cols="12"
                 md="4"
             >
-              <UserCard :user="user"/>
+              <UserCard :user="user" :admin="adminStore.currentAdmin"/>
             </v-col>
           </v-row>
         </v-container>
@@ -96,8 +96,8 @@ export default {
   }),
   methods: {
     reloadTab(a) {
-      if (a === 1)
-        window.location.reload();
+      // if (a === 1)
+        // window.location.reload();
       this.active = a;
     }
   }

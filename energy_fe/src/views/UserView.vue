@@ -20,12 +20,13 @@
                 cols="12"
                 md="4"
             >
-              <DeviceCard :device="device" />
+              <DeviceCard :device="device"/>
             </v-col>
           </v-row>
         </v-container>
       </v-tab-item>
     </v-tabs>
+    <ChatCard :user="userStore.user"/>
   </v-container>
 </template>
 
@@ -33,10 +34,11 @@
 import {useUserStore} from "@/store/useUserStore";
 import UserCard from "@/components/UserCard";
 import DeviceCard from "@/components/DeviceCard";
+import ChatCard from "@/components/UserChatCard.vue";
 
 export default {
   name: "UserView",
-  components: {UserCard, DeviceCard},
+  components: {ChatCard, UserCard, DeviceCard},
   setup() {
     const userStore = useUserStore();
     userStore.getDevices();

@@ -14,6 +14,7 @@
     <v-divider/>
     <v-card-actions>
       <UserUpdateComponent v-if="!isHide" :user="user"/>
+      <AdminChatCard v-if="!isHide" :admin="admin" :user="user"/>
       <v-btn icon v-if="!isHide" @click="deleteUser">
         <v-icon>mdi-delete</v-icon>
       </v-btn>
@@ -28,10 +29,12 @@
 import UserUpdateComponent from "@/components/UserUpdateComponent";
 import {useAdminStore} from "@/store/useAdminStore";
 import stompClient from "@/plugins/socket";
+import AdminChatCard from "@/components/AdminChatCard.vue";
 
 export default {
   name: "UserCard",
   components: {
+    AdminChatCard,
     UserUpdateComponent
   },
   props: {
@@ -43,7 +46,8 @@ export default {
     isHide: {
       type: Boolean,
       default: false
-    }
+    },
+    admin: null
   },
   data() {
     return {
@@ -58,7 +62,7 @@ export default {
   methods: {
     deleteUser() {
       useAdminStore().deleteUser(this.user);
-      window.location.reload();
+      // window.location.reload();
     }
   },
   mounted() {

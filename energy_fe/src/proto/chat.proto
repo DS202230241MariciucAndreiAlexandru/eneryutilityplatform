@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package com.sd.energy.grpc.services;
+
+option java_multiple_files = true;
+option java_package = "com.sd.energy.grpc.services";
+
+message Empty {}
+
+message UserChatRequest {
+  int64 userId = 1;
+}
+
+message AdminChatRequest {
+  int64 adminId = 1;
+  int64 userId = 2;
+}
+
+message Message {
+  string message = 3;
+  string createdAt = 4;
+
+}
+
+message MessageRequest {
+  int64 userId = 1;
+  int64 adminId = 2;
+
+  Message message = 3;
+}
+
+service ChatService {
+  //  simple user action
+  rpc startUserChat(UserChatRequest) returns(stream Message);
+  rpc stopUserChat(UserChatRequest) returns (Empty);
+
+  //  admin action
+  rpc startAdminChat(AdminChatRequest) returns(stream Message);
+  rpc stopAdminChat(AdminChatRequest) returns(Empty);
+
+  //
+  rpc sendAdminMessage(MessageRequest) returns(Empty);
+  rpc sendUserMessage(MessageRequest) returns(Empty);
+}

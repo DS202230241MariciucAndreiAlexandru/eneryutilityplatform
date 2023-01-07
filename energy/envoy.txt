@@ -1,0 +1,5 @@
+docker build -t envoy -f ./envoy.Dockerfile .
+docker run -d -p 9091:9091 envoy
+
+
+protoc --proto_path=./src/proto chat.proto --js_out=import_style=commonjs:./src/proto/ --grpc-web_out=import_style=commonjs+dts,mode=grpcwebtext:./src/proto/

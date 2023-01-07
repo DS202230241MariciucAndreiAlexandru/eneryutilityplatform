@@ -131,7 +131,7 @@ export default {
     updateHandler() {
       this.dialog = false;
       this.adminStore.updateUser(this.updatedUser);
-      window.location.reload();
+      // window.location.reload();
     }
   }
 }

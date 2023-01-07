@@ -5,12 +5,15 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "proto": "protoc ./src/proto/chat.proto   --js_out=import_style=commonjs:./src/proto   --grpc-web_out=import_style=commonjs+dts,mode=grpcwebtext:./src/proto"
   },
   "dependencies": {
     "@vue/composition-api": "^1.7.1",
     "chart.js": "^3.9.1",
     "core-js": "^3.8.3",
+    "google-protobuf": "^3.21.2",
+    "grpc-web": "^1.4.2",
     "net": "^1.0.2",
     "pinia": "^2.0.23",
     "sockjs-client": "^1.6.1",
