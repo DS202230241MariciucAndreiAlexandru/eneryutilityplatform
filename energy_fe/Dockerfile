@@ -30,6 +30,7 @@ COPY . .
 
 # build app for production with minification
 # RUN npm run build
+RUN ["npm", "i", "--force"]
 
 EXPOSE 80
 ENTRYPOINT [ "npm", "run", "serve", "--", "--port", "80"]
