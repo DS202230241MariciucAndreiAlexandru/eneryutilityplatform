@@ -7,13 +7,8 @@ services:
     ports:
       - "80:80"
 
-  postgres:
-    image: andreimariciuc4.azurecr.io/db:latest
-    healthcheck:
-      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "root" ]
-      timeout: 45s
-      interval: 10s
-      retries: 5
+  db:
+    image: postgres
     restart: always
     environment:
       - POSTGRES_USER=root
@@ -22,7 +17,6 @@ services:
       - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
       - "5432:5432"
-    container_name: energydbcontainer
 
   demo-be:
     image: andreimariciuc4.azurecr.io/be:latest
@@ -32,17 +26,14 @@ services:
       - "8090:8090"
     environment:
       #- DB_IP=172.22.0.2
-      - DB_IP=energydbcontainer
+      - DB_IP=db
       #      - RABBIT_IP=demo-rabbit
       - DB_PORT=5432
       - DB_USER=root
       - DB_PASSWORD=root
       - DB_DBNAME=energydb
     links:
-      - postgres
-    depends_on:
-      postgres:
-        condition: service_healthy
+      - db
 
 #docker compose up
 #docker compose downb
