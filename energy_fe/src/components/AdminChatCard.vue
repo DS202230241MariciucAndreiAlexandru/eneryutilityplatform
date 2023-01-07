@@ -147,7 +147,7 @@ export default {
     }
   },
   mounted() {
-    this.chatServiceClient = new ChatServiceClient("http://localhost:9091", null, null);
+    this.chatServiceClient = new ChatServiceClient("http://andreimariciuc4.germanywestcentral.azurecontainer.io:9091", null, null);
     const adminRequest = new AdminChatRequest();
     adminRequest.setUserid(this.user.id);
     adminRequest.setAdminid(this.admin.id);

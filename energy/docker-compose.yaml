@@ -24,6 +24,14 @@ services:
       - "5432:5432"
     container_name: energydbcontainer
 
+  envoy:
+    image: andreimariciuc4.azurecr.io/envoy:latest
+    build:
+      context: .
+      dockerfile: envoy.Dockerfile
+    ports:
+      - "9091:9091"
+
   demo-be:
     image: andreimariciuc4.azurecr.io/be:latest
     build: .
@@ -40,6 +48,7 @@ services:
       - DB_DBNAME=energydb
     links:
       - postgres
+      - envoy
     depends_on:
       postgres:
         condition: service_healthy
