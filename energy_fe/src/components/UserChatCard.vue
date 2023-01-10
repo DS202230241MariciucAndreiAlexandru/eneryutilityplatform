@@ -1,7 +1,7 @@
 <template>
   <v-container justify="center">
     <v-alert type="success" :value="msgAlert">
-      Unul dintre admini ti-a dat mesaj!
+      {{msgAlertContent}}
     </v-alert>
     <v-btn
         icon
@@ -15,6 +15,9 @@
       </v-icon>
     </v-btn>
     <v-dialog v-model="chatDialog" max-width="600px">
+      <v-alert type="success" :value="msgAlertIn">
+        {{msgAlertContent}}
+      </v-alert>
       <v-card
           flat
           class="d-flex flex-column fill-height"
@@ -74,7 +77,7 @@
 
 <script>
 import {ChatServiceClient} from "@/proto/chat_grpc_web_pb";
-import {Message, MessageRequest, UserChatRequest} from "@/proto/chat_pb";
+import {Message, MessageRequest, MessageType, UserChatRequest} from "@/proto/chat_pb";
 
 export default {
   name: "ChatCard",
@@ -92,8 +95,11 @@ export default {
     chatServiceClient: null,
     messagesStream: null,
     msgAlert: false,
+    msgAlertIn: false,
+    msgAlertCount: 0,
     isTyping: false,
-    sendedTyping: false
+    sendedTyping: false,
+    msgAlertContent: ""
   }),
   methods: {
     sendMessage() {
@@ -103,9 +109,10 @@ export default {
 
       messageRequest.setUserid(this.user.id);
       let message = new Message();
+      message.setMessagetype(MessageType.CONTENT);
       message.setMessage(this.messageForm.content);
       message.setCreatedat(this.messageForm.createdAt);
-      if(message.getMessage() === '') return;
+      if (message.getMessage() === '') return;
       messageRequest.setMessage(message);
       this.chatServiceClient.sendUserMessage(messageRequest);
 
@@ -118,53 +125,85 @@ export default {
       this.sendedTyping = false;
       this.messageForm.content = "";
     },
-    sendTyping() {
-
+    sendSeen() {
       let messageRequest = new MessageRequest();
 
       messageRequest.setUserid(this.user.id);
-      messageRequest.setMessage(null);
+      let message = new Message();
+      message.setMessagetype(MessageType.SEEN);
+      messageRequest.setMessage(message);
+
+      this.chatServiceClient.sendUserMessage(messageRequest);
+    },
+    sendTyping() {
+      let messageRequest = new MessageRequest();
+
+      messageRequest.setUserid(this.user.id);
+      let message = new Message();
+      message.setMessagetype(MessageType.TYPING);
+      messageRequest.setMessage(message);
 
       this.chatServiceClient.sendUserMessage(messageRequest);
     },
     sendTypingInput() {
-      if (this.messageForm.content.length === 1 &&  !this.sendedTyping) {
+      if (this.messageForm.content.length === 1 && !this.sendedTyping) {
         this.sendedTyping = !this.sendedTyping;
         this.sendTyping();
-      } else if(this.sendedTyping && this.messageForm.content.length === 0) {
+      } else if (this.sendedTyping && this.messageForm.content.length === 0) {
         this.sendedTyping = !this.sendedTyping;
         this.sendTyping();
       }
     },
     sendTypingFocusOut() {
-      // if (this.sendedTyping) {
-      //   this.sendedTyping = !this.sendedTyping;
-      //   this.sendTyping();
-      // }
     }
   },
   mounted() {
-    this.chatServiceClient = new ChatServiceClient("http://andreimariciuc4.germanywestcentral.azurecontainer.io:9091", null, null);
-    // this.chatServiceClient = new ChatServiceClient("http://localhost:9091", null, null);
+    // this.chatServiceClient = new ChatServiceClient("http://andreimariciuc4.germanywestcentral.azurecontainer.io:9091", null, null);
+    this.chatServiceClient = new ChatServiceClient("http://localhost:9091", null, null);
     const userRequest = new UserChatRequest();
     userRequest.setUserid(this.user.id);
     this.messagesStream = this.chatServiceClient.startUserChat(userRequest);
 
     this.messagesStream.on("data", message => {
-      if (!message.getMessage()) {
+      if (message.getMessagetype() === MessageType.SEEN) {
+        this.msgAlertContent = `Unul dintre adminti ti-a vazut mesajele!`;
+        this.msgAlertIn = true;
+        setTimeout(() => {
+          this.msgAlertIn = false;
+        }, 5000);
+        return;
+      }
+
+      if (message.getMessagetype() === MessageType.TYPING) {
         this.isTyping = !this.isTyping;
         return;
       }
+
       this.isTyping = false;
 
       this.messages.push({content: message.getMessage(), me: false, createdAt: message.getCreatedat()});
       if (!this.chatDialog) {
         this.msgAlert = true;
+        this.msgAlertContent = "Unul dintre admini ti-a dat mesaj!";
         setTimeout(() => {
           this.msgAlert = false;
         }, 5000);
+
+        this.msgAlertCount++;
       }
     });
+  },
+  watch: {
+    chatDialog(n, _) {
+      if (n === true) {
+
+        if (this.msgAlertCount > 0) {
+          this.sendSeen();
+        }
+
+        this.msgAlertCount = 0;
+      }
+    }
   },
   beforeUnmounted() {
     const userRequest = new UserChatRequest();

@@ -16,10 +16,17 @@ message AdminChatRequest {
   int64 userId = 2;
 }
 
+enum MessageType {
+  CONTENT = 0;
+  TYPING = 1;
+  SEEN = 2;
+}
+
 message Message {
+  MessageType messageType = 1;
+
   string message = 3;
   string createdAt = 4;
-
 }
 
 message MessageRequest {

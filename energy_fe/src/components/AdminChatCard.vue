@@ -1,14 +1,14 @@
 <template>
   <v-container justify="center">
-    <!--    <v-alert type="success" :value="msgAlert">-->
-    <!--      {{ msgAlertContent }}-->
-    <!--    </v-alert>-->
     <v-btn
         icon
         @click.stop="chatDialog = true">
       <v-icon x-large>mdi-wechat</v-icon>
     </v-btn>
     <v-dialog v-model="chatDialog" max-width="800px">
+      <v-alert type="success" :value="msgAlert">
+        {{ msgAlertContent }}
+      </v-alert>
       <v-card
           flat
           class="d-flex flex-column fill-height"
@@ -73,7 +73,7 @@
 </template>
 
 <script>
-import {AdminChatRequest, Message, MessageRequest} from "@/proto/chat_pb";
+import {AdminChatRequest, Message, MessageRequest, MessageType, UserChatRequest} from "@/proto/chat_pb";
 import {ChatServiceClient} from "@/proto/chat_grpc_web_pb";
 
 export default {
@@ -95,7 +95,8 @@ export default {
     chatServiceClient: null,
     messagesStream: null,
     isTyping: false,
-    sendedTyping: false
+    sendedTyping: false,
+    msgAlertContent: ""
   }),
   methods: {
     sendMessage() {
@@ -106,6 +107,7 @@ export default {
       messageRequest.setUserid(this.user.id);
       messageRequest.setAdminid(this.admin.id);
       let message = new Message();
+      message.setMessagetype(MessageType.CONTENT);
       message.setMessage(this.messageForm.content);
       message.setCreatedat(this.messageForm.createdAt);
 
@@ -121,44 +123,63 @@ export default {
       this.messageForm.content = "";
       this.sendedTyping = false;
     },
+    sendSeen() {
+      let messageRequest = new MessageRequest();
+
+      messageRequest.setUserid(this.user.id);
+      messageRequest.setAdminid(this.admin.id);
+      let message = new Message();
+      message.setMessagetype(MessageType.SEEN);
+      messageRequest.setMessage(message);
+
+      this.chatServiceClient.sendAdminMessage(messageRequest);
+    },
     sendTyping() {
       let messageRequest = new MessageRequest();
 
       messageRequest.setUserid(this.user.id);
       messageRequest.setAdminid(this.admin.id);
-      messageRequest.setMessage(null);
+      let message = new Message();
+      message.setMessagetype(MessageType.TYPING);
+      messageRequest.setMessage(message);
 
       this.chatServiceClient.sendAdminMessage(messageRequest);
     },
     sendTypingInput() {
-      if (this.messageForm.content.length === 1 &&  !this.sendedTyping) {
+      if (this.messageForm.content.length === 1 && !this.sendedTyping) {
         this.sendedTyping = !this.sendedTyping;
         this.sendTyping();
-      } else if(this.sendedTyping && this.messageForm.content.length === 0) {
+      } else if (this.sendedTyping && this.messageForm.content.length === 0) {
         this.sendedTyping = !this.sendedTyping;
         this.sendTyping();
       }
     },
     sendTypingFocusOut() {
-      // if (this.sendedTyping) {
-      //   this.sendedTyping = !this.sendedTyping;
-      //   this.sendTyping();
-      // }
     }
   },
   mounted() {
-    this.chatServiceClient = new ChatServiceClient("http://andreimariciuc4.germanywestcentral.azurecontainer.io:9091", null, null);
-    // this.chatServiceClient = new ChatServiceClient("http://localhost:9091", null, null);
+    // this.chatServiceClient = new ChatServiceClient("http://andreimariciuc4.germanywestcentral.azurecontainer.io:9091", null, null);
+    this.chatServiceClient = new ChatServiceClient("http://localhost:9091", null, null);
     const adminRequest = new AdminChatRequest();
     adminRequest.setUserid(this.user.id);
     adminRequest.setAdminid(this.admin.id);
     this.messagesStream = this.chatServiceClient.startAdminChat(adminRequest);
 
     this.messagesStream.on("data", message => {
-      if (!message.getMessage()) {
+      if (message.getMessagetype() === MessageType.SEEN) {
+        this.msgAlertContent = `${this.user.username} a citit ultimele mesaje!`;
+        this.msgAlert = true;
+        setTimeout(() => {
+          this.msgAlert = false;
+        }, 5000);
+        return;
+      }
+
+      if (message.getMessagetype() === MessageType.TYPING) {
         this.isTyping = !this.isTyping;
         return;
       }
+
       this.isTyping = false;
 
       this.messages.push({content: message.getMessage(), me: false, createdAt: message.getCreatedat()});
@@ -170,14 +191,19 @@ export default {
   watch: {
     chatDialog(n, _) {
       if (n === true) {
+
+        if (this.msgAlertCount > 0) {
+          this.sendSeen();
+        }
+
         this.msgAlertCount = 0;
       }
     }
   },
   beforeUnmounted() {
-    // const userRequest = new UserChatRequest();
-    // userRequest.setUserid(this.admin.id);
-    // this.chatServiceClient.stopUserChat(userRequest);
+    const userRequest = new UserChatRequest();
+    userRequest.setUserid(this.admin.id);
+    this.chatServiceClient.stopUserChat(userRequest);
   }
 }
 </script>

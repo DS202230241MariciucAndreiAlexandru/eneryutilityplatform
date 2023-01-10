@@ -57,6 +57,9 @@ export namespace AdminChatRequest {
 }
 
 export class Message extends jspb.Message {
+  getMessagetype(): MessageType;
+  setMessagetype(value: MessageType): Message;
+
   getMessage(): string;
   setMessage(value: string): Message;
 
@@ -73,6 +76,7 @@ export class Message extends jspb.Message {
 
 export namespace Message {
   export type AsObject = {
+    messagetype: MessageType,
     message: string,
     createdat: string,
   }
@@ -106,3 +110,8 @@ export namespace MessageRequest {
   }
 }
 
+export enum MessageType { 
+  CONTENT = 0,
+  TYPING = 1,
+  SEEN = 2,
+}
