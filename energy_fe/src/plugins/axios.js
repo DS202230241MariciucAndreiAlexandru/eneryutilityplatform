@@ -9,8 +9,8 @@ import axios from "axios";
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 
 let config = {
-    // baseURL: "http://andreimariciuc4.germanywestcentral.azurecontainer.io:8090"
-    baseURL: "http://localhost:8090"
+    baseURL: "http://andreimariciuc4.germanywestcentral.azurecontainer.io:8090"
+    // baseURL: "http://localhost:8090"
     // timeout: 60 * 1000, // Timeout
     // withCredentials: true, // Check cross-site Access-Control
 };

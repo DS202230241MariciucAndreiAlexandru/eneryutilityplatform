@@ -158,8 +158,8 @@ export default {
     }
   },
   mounted() {
-    // this.chatServiceClient = new ChatServiceClient("http://andreimariciuc4.germanywestcentral.azurecontainer.io:9091", null, null);
-    this.chatServiceClient = new ChatServiceClient("http://localhost:9091", null, null);
+    this.chatServiceClient = new ChatServiceClient("http://andreimariciuc4.germanywestcentral.azurecontainer.io:9091", null, null);
+    // this.chatServiceClient = new ChatServiceClient("http://localhost:9091", null, null);
     const userRequest = new UserChatRequest();
     userRequest.setUserid(this.user.id);
     this.messagesStream = this.chatServiceClient.startUserChat(userRequest);
